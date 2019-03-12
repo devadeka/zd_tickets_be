@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe 'Articles API', type: :request do 
-  let!(:articles) { create_list(:article, 10) }
-
+  let!(:articles) { create_list(:article, 20) }
+  let(:page_params) { {page: 1} }
   describe 'GET /articles' do
-    before { get '/articles' }
+    before { get '/articles', params: page_params }
 
     it 'returns articles' do
       @json = JSON.parse(response.body)
