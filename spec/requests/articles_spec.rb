@@ -7,8 +7,9 @@ RSpec.describe 'Articles API', type: :request do
     before { get '/articles' }
 
     it 'returns articles' do
-      expect(json).not_to be_empty
-      expect(json.size).to eq(10)
+      @json = JSON.parse(response.body)
+      expect(@json).not_to be_empty
+      expect(@json.size).to eq(10)
     end
 
     it 'returns status code 200' do
