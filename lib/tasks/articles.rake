@@ -14,9 +14,10 @@ desc 'upserts last article'
 task upsert_last_article: :environment do
   last_article = Article.last
   p last_article
-  upserted_article = Article.find_or_initialize_by(external_id: last_article.external_id)
-  upserted_article.title = Faker::Lorem.sentence
-  upserted_article.body = Faker::Lorem.paragraph
-  upserted_article.save
+  params = {
+    "title" => Faker::Lorem.sentence,
+    "body" => Faker::Lorem.paragraph
+  }
+  upserted_article = Article.upsert_by_external_id(last_article.external_id, params)
   p Article.last
 end
