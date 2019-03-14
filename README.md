@@ -32,7 +32,7 @@ Ensure internet connection is available as the application makes calls to extern
 After cloning and installing dependencies.
 Ensure internet connection is available as the application makes calls to external APIs.
 
-`rails c`
+`rails s`
 
 ## Design Decisions
 Main design decision came in the form of caching technique. Originally the API was built as a standard CRUD app witha PostgresDB- only allowing the controller action of `index`. The caching mechanism would have been to run a background cron-job to periodically request the data and use the Rails-Models to add/update in Postgres (this can be seen in the cron_caching branch of the repository). This method was abandonned after looking at the number of DB calls the background job would have to make to maintain the near 2000 entries.
