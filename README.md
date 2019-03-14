@@ -1,24 +1,47 @@
-# README
+# Zendesk FAQs
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Task
+Create an application that will list all available articles for the user to select and view in detail. The [front end](https://github.com/devadeka/zd_tickets_fe) application will need to talk to a [proxy API](https://github.com/devadeka/zd_tickets_be) that caches data from Zendesk's FAQs API for an hour.
 
-Things you may want to cover:
+## Technology Used
+The application was developed on `Ubuntu 18.04`
 
-* Ruby version
+Modules and Libraries used:
+- Ruby v2.6.0
+- Rails v5.2.2
+- [HTTParty](https://github.com/jnunemaker/httparty)
+- [Redis](https://github.com/antirez/redis)
+- [Rspec](https://github.com/rspec/rspec)
 
-* System dependencies
+## Installation
+First clone repository.
 
-* Configuration
+`git clone https://github.com/devadeka/zd_tickets_be.git`
 
-* Database creation
+Install dependencies.
 
-* Database initialization
+`bundle install`
 
-* How to run the test suite
+## Testing
+After cloning and installing dependencies.
+Ensure internet connection is available as the application makes calls to external APIs.
 
-* Services (job queues, cache servers, search engines, etc.)
+`bundle exec rspec`
 
-* Deployment instructions
+## Running
+After cloning and installing dependencies.
+Ensure internet connection is available as the application makes calls to external APIs.
 
-* ...
+`rails c`
+
+## Design Decisions
+The main design decision came in the form of the caching technique. Originally the API was built as a standard CRUD app with a PostgresDB- only allowing the controller action of `index`. The caching mechanism would have been to run a background cron-job to periodically request the data and use the Rails-Models to add/update in Postgres (this can be seen in the cron_caching branch of the repository). This method was abandoned after looking at the number of DB calls the background job would have to make to maintain the near 2000 entries.
+
+The cron-caching method was abandoned in favour of redis-caching. Rails5 has support for Redis caching, so the set up was simple. Where the cron-caching method intended to keep 'models' of Articles/FAQs, the redis-caching method stored the JSON response of the page request (which contained the Articles and the metrics - page and page_count).
+
+A minor design decision was to filter out unnecessary fields in the JSON response. Because the purpose of this API was to cache and forward information to the frontend application, knowing exactly what information the frontend utilises allows this API to only return the needed fields. The advantage of this would be to reduce the payload for the frontend. 
+
+Reducing the payload was also a factor in deciding to hardcode (rather than allow the user to select) the `per_page` value when querying Zendesk's FAQs API. The `per_page` value can be set up to 100, but a value of 10 was chosen so that a response will be processed quicker - the user of the frontend application can make multiple small requests for page information.
+
+## Improvements
+An advantage of the cron-caching method was it could be tested with dummy data without relying on the external data source. Abetter testing strategy is needed for the API to not rely on having internet connection.
