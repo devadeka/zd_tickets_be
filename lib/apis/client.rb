@@ -6,8 +6,10 @@ module ZDHelpCenter
       API_URL = 'https://support.zendesk.com/api/v2/help_center/en-us/articles'.freeze
 
       def self.request_faqs_by_page(page)
-        Rails.cache.fetch(['zd_faqs', page], expires_in: 1.hour) do
+        Rails.cache.fetch(['zd_faqs', page], expires_in: 3.minutes) do
           response = HTTParty.get("#{API_URL}?per_page=#{PER_PAGE}&page=#{page}")
+          raise RoutingError, 'Not Found' if response.code != 200
+
           JSON.parse(response.body)
         end
       end
