@@ -37,7 +37,7 @@ Ensure internet connection is available as the application makes calls to extern
 ## Design Decisions
 Main design decision came in the form of caching technique. Originally the API was built as a standard CRUD app witha PostgresDB- only allowing the controller action of `index`. The caching mechanism would have been to run a background cron-job to periodically request the data and use the Rails-Models to add/update in Postgres (this can be seen in the cron_caching branch of the repository). This method was abandonned after looking at the number of DB calls the background job would have to make to maintain the near 2000 entries.
 
-The cron-caching method was abondonned in favour of redis-caching. Rails5 has support for Redis caching to the set up was simple. Where the cron-caching method intended to keep 'models' of Articles/FAQs, the redis-caching method stored the JSON response of the page request (which contained the Articles and the metrics - page and page_count).
+The cron-caching method was abondonned in favour of redis-caching. Rails5 has support for Redis caching to the set up was simple. Where the cron-caching method intended to keep 'models' of Articles/FAQs, the redis-caching method stored the JSON response of the page request (which contained the Articles and the metrics - `page` and `page_count`).
 
 A minor design decision was to filter out unecessary fields in the JSON response. Because the purpose of this API was to cache and forward information to the forntend application, knowing exactly what information the frontend utilises allows this API to only return the needed fields. The advantage of this would be to reduce the payload for the frontend. 
 
