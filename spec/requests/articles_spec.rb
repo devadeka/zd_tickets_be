@@ -31,18 +31,17 @@ RSpec.describe 'Articles API', type: :request do
       end
     end
 
-    context 'when last page is specified' do
-      let(:page_params) { {page: 3} }
+    context 'when incorrect page is specified' do
+      let(:page_params) { {page: 'd'} }
 
       before { get '/articles', params: page_params }
 
-      it 'returns status code 200' do
-        expect(response).to have_http_status(200)
+      it 'returns status code 404' do
+        expect(response).to have_http_status(404)
       end
 
       it 'returns the correct page' do
-        @json = JSON.parse(response.body)
-        expect(@json['page']).to eq(3)
+        expect(response.body).to eq('Data not found')
       end
     end
   end

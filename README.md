@@ -54,3 +54,4 @@ Reducing the payload was also a factor in deciding to hardcode (rather than allo
 An advantage of the cron-caching method was it could be tested with dummy data without relying on the external data source. A better testing strategy is needed for the API to not rely on having internet connection.
 
 Since the database is no longer being used, all references to it needds to be removed.
+

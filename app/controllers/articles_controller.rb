@@ -3,7 +3,7 @@ class ArticlesController < ApplicationController
   def index
     page = (params[:page] || 1).to_i
 
-    response = Rails.cache.fetch(['zd_faqs', page], expires_in: 3.minutes) do
+    response = Rails.cache.fetch(['zd_faqs', page], expires_in: 1.hour) do
       begin
         faqs = ZDHelpCenter::Client.request_faqs_by_page(page)
       rescue ZDHelpCenter::APIError => e
