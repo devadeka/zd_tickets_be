@@ -3,10 +3,12 @@ class ArticlesController < ApplicationController
   def index
     page = (params[:page] || 1).to_i
 
-    begin
-      faqs = ZDHelpCenter::Client.request_faqs_by_page(page)
-    rescue ZDHelpCenter::APIError => e
-      render json: 'Data not found', status: :not_found and return
+    Rails.cache.fetch(['zd_faqs', page], expires_in: 3.minutes) do
+      begin
+        faqs = ZDHelpCenter::Client.request_faqs_by_page(page)
+      rescue ZDHelpCenter::APIError => e
+        render json: 'Data not found', status: :not_found and return
+      end
     end
 
     page_count = faqs['page_count']
