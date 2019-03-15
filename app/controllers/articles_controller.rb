@@ -4,8 +4,8 @@ class ArticlesController < ApplicationController
     page = (params[:page] || 1).to_i
 
     begin
-      faqs = ZDHelpCenter::V2::Client.request_faqs_by_page(page)
-    rescue
+      faqs = ZDHelpCenter::Client.request_faqs_by_page(page)
+    rescue ZDHelpCenter::APIError => e
       render json: 'Data not found', status: :not_found and return
     end
 
