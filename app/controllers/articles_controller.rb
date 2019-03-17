@@ -5,19 +5,25 @@ class ArticlesController < ApplicationController
 
     response = Rails.cache.fetch(['zd_faqs', page], expires_in: 1.hour) do
       begin
-        faqs = ZDHelpCenter::Client.request_faqs_by_page(page)
+        @faqs = ZDHelpCenter::Client.request_faqs_by_page(page)
       rescue ZDHelpCenter::APIError => e
         render json: 'Data not found', status: :not_found and return
-      end
-
-      page_count = faqs['page_count']
-      articles = faqs['articles'].map do |article|
-        article.slice('id', 'title', 'body')
       end
 
       { page: page, page_count: page_count, articles: articles }
     end
 
     render json: response
+  end
+
+  private
+  def page_count
+    @faqs['page_count']
+  end
+
+  def articles
+    @faqs['articles'].map do |article|
+      article.slice('id', 'title', 'body')
+    end
   end
 end
